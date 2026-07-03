@@ -4,7 +4,7 @@ langchain-community
 langchain-google-genai
 langchain-huggingface
 langchain-chroma
-chromadb==0.4.24
+chromadb==0.6.3
 sentence-transformers
 python-dotenv
 google-generativeai
