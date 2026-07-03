@@ -9,3 +9,4 @@ sentence-transformers
 python-dotenv
 google-generativeai
 langchain-text-splitters
+numpy<2.0
