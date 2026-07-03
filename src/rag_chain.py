@@ -71,7 +71,7 @@ def answer_query(question: str, api_key: str):
 
     #以下是with Sources retrieved from knowledge base框框的code，显示chatbot检索到的来源文件
     sources = list(set(
-        os.path.basename(doc.metadata.get("source", "Unknown"))
+        doc.metadata.get("source", "Unknown").replace("\\", "/").split("/")[-1]
         for doc in retrieved_docs
     ))
 
