@@ -75,7 +75,16 @@ def answer_query(question: str, api_key: str):
         for doc in retrieved_docs
     ))
 
+    # Fix: handle cases where content is returned as a list of blocks
+    content = response.content
+    if isinstance(content, list):
+        content = " ".join(
+            block.get("text", "") if isinstance(block, dict) else str(block)
+            for block in content
+        )
+
     return {
-        "answer": response.content,
+        "answer": content,
         "sources": sources,
     }
+    
