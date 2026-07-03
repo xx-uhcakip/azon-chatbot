@@ -2,7 +2,7 @@ import os
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import Chroma
 from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain.prompts import PromptTemplate
+from langchain_core.prompts import PromptTemplate
 
 VECTOR_DB_DIR = os.path.join(os.path.dirname(__file__), "..", "data", "vector_store")
 EMBEDDING_MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
