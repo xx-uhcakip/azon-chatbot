@@ -1,11 +1,9 @@
 import os
-from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import Chroma
 from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain_core.prompts import PromptTemplate
+from langchain.prompts import PromptTemplate
 
 VECTOR_DB_DIR = os.path.join(os.path.dirname(__file__), "..", "data", "vector_store")
-EMBEDDING_MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
 TOP_K = 4
 
 SYSTEM_PROMPT = PromptTemplate(
@@ -40,13 +38,12 @@ Your response:""",
 
 
 def get_vector_store():
-    embeddings = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL_NAME)
-    return Chroma(persist_directory=VECTOR_DB_DIR, embedding_function=embeddings)
+    return Chroma(persist_directory=VECTOR_DB_DIR)
 
 
 def get_llm(api_key: str):
     return ChatGoogleGenerativeAI(
-        model="gemini-3.5-flash",
+        model="gemini-2.5-flash",
         google_api_key=api_key,
         temperature=0.7,
     )
@@ -65,17 +62,6 @@ def answer_query(question: str, api_key: str):
     llm = get_llm(api_key)
     response = llm.invoke(prompt)
 
-    # return {
-    #     "answer": response.content,
-    # }
-
-    #以下是with Sources retrieved from knowledge base框框的code，显示chatbot检索到的来源文件
-    sources = list(set(
-        doc.metadata.get("source", "Unknown").replace("\\", "/").split("/")[-1]
-        for doc in retrieved_docs
-    ))
-
-    # Fix: handle cases where content is returned as a list of blocks
     content = response.content
     if isinstance(content, list):
         content = " ".join(
@@ -83,8 +69,12 @@ def answer_query(question: str, api_key: str):
             for block in content
         )
 
+    sources = list(set(
+        os.path.basename(doc.metadata.get("source", "Unknown"))
+        for doc in retrieved_docs
+    ))
+
     return {
         "answer": content,
         "sources": sources,
     }
-    
