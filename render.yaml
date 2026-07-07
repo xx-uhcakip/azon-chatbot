@@ -2,7 +2,7 @@ services:
   - type: web
     name: azon-chatbot
     runtime: python
-    buildCommand: pip install -r requirements.txt && python src/ingest.py
+    buildCommand: pip install -r requirements.txt
     startCommand: streamlit run src/app.py --server.port $PORT --server.address 0.0.0.0
     envVars:
       - key: GOOGLE_API_KEY
